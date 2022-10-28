@@ -5,7 +5,9 @@ if(isset($_POST["Enviar"])){
     $data["errores"] = checkForm($_POST);
     $_POST["input"] = filter_var_array($_POST);
     if(empty($data["errores"])){
-        
+        $arrayJson = json_decode($_POST["datos"],true);
+        $resultado = datosAsignaturas($arrayJson);
+        $data["resultado"] = $resultado;
     }
 }
 
@@ -49,6 +51,61 @@ function checkForm(array $post) : array {
         }
     }
     return $errores;
+}
+
+function datosAsignaturas(array $arrayJson) : array{
+    $resultado = array();
+    $alumnos = array();
+    foreach ($arrayJson as $asignatura => $alumno){
+        $resultado[$asignatura] = array();
+        $aprobados = 0;
+        $suspensos = 0;
+        $notaMaxima = array(
+            "alumno" => "",
+            "nota" => -1
+        );
+        
+        $notaMinima = array(
+            "alumno" => "",
+            "nota" => 11
+        );
+        $notaAcumulada = 0;
+        $contadorAlumnos = 0;
+        
+        foreach ($alumno as $nombreAlumno => $nota){
+            if(!isset($alumnos[$nombreAlumno])){
+                $alumno[$nombreAlumno] = [$aprobados => 0 , $suspensos => 0];
+            }
+            $contadorAlumnos++;
+            $notaAcumulada += $nota;
+            
+            if($nota < 5){
+                $suspensos++;
+                $alumnos[$nombreAlumno]["suspensos"]++;
+            } else {
+                $aprobados++;
+                $alumnos[$nombreAlumno]["aprobados"]++;
+            }
+            if($nota > $notaMaxima["nota"]){
+                $notaMaxima["alumno"] = $nombreAlumno;
+                $notaMaxima["nota"] = $nota;
+            }
+            if($nota < $notaMinima["nota"]){
+                $notaMinima["alumno"] = $nombreAlumno;
+                $notaMinima["nota"] = $nota;
+            }
+        }
+        if($contadorAlumnos > 0){
+            $resultado[$asignatura]["media"] = $notaAcumulada / $contadorAlumnos;
+            $resultado[$asignatura]["max"] = $notaMaxima;
+            $resultado[$asignatura]["min"] = $notaMinima; 
+        }else{
+            $resultado[$asignatura]["media"] = 0;
+        }
+        $resultado[$asignatura]["aprobados"] = $aprobados;
+        $resultado[$asignatura]["suspensos"] = $suspensos;
+    }
+    return array("asignaturas" => $resultado, "alumnos" => $alumnos);
 }
 
 include 'views/templates/header.php';
