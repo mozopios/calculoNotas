@@ -3,7 +3,7 @@ declare (strict_types = 1);
 
 if(isset($_POST["Enviar"])){
     $data["errores"] = checkForm($_POST);
-    $_POST["input"] = filter_var_array($_POST);
+    $data["input"] = filter_var_array($_POST);
     if(empty($data["errores"])){
         $arrayJson = json_decode($_POST["datos"],true);
         $resultado = datosAsignaturas($arrayJson);
@@ -30,17 +30,19 @@ function checkForm(array $post) : array {
                     $erroresArrayJson .= "La asiganatura " . htmlentities($asignatura) . " no contiene un array de alumnos <br />";
                 }
                 else{
-                    foreach ($alumnos as $nombreAlumno => $nota){
+                    foreach ($alumnos as $nombreAlumno => $notas){
                         if(empty($nombreAlumno)){
                             $erroresArrayJson .= "La asignatura " . htmlentities($asignatura) ." tiene un alumno sin nombre <br />";
                         }
-                        if(!is_int($nota)){
-                            $erroresArrayJson .= "La asignatura " . htmlentities($asignatura) . " tiene una nota que no es un int ". htmlentities($nota);
-                        }
-                        else{
+                        foreach ($notas as $nota){
+                            if(!is_numeric($nota)){
+                                $erroresArrayJson .= "La asignatura " . htmlentities($asignatura) . " tiene una nota que no es un int ". htmlentities($nota);
+                            }
+                            else{
                             if($nota < 0 || $nota > 10){
                                 $erroresArrayJson .= "La asigantura " . htmlentities($asignatura) . " el alumno " . htmlentities($alumnos) . " tiene una nota " . htmlentities($nota) . " que no esta en el ragon de 0 a 10";
                             }
+                        }  
                         }
                     }
                 }
@@ -72,28 +74,33 @@ function datosAsignaturas(array $arrayJson) : array{
         $notaAcumulada = 0;
         $contadorAlumnos = 0;
         
-        foreach ($alumno as $nombreAlumno => $nota){
-            if(!isset($alumnos[$nombreAlumno])){
-                $alumno[$nombreAlumno] = [$aprobados => 0 , $suspensos => 0];
-            }
-            $contadorAlumnos++;
-            $notaAcumulada += $nota;
-            
-            if($nota < 5){
-                $suspensos++;
-                $alumnos[$nombreAlumno]["suspensos"]++;
-            } else {
-                $aprobados++;
-                $alumnos[$nombreAlumno]["aprobados"]++;
-            }
-            if($nota > $notaMaxima["nota"]){
-                $notaMaxima["alumno"] = $nombreAlumno;
-                $notaMaxima["nota"] = $nota;
-            }
-            if($nota < $notaMinima["nota"]){
-                $notaMinima["alumno"] = $nombreAlumno;
-                $notaMinima["nota"] = $nota;
-            }
+        foreach ($alumno as $nombreAlumno => $notas){
+                if(!isset($alumnos[$nombreAlumno])){
+                    $alumnos[$nombreAlumno] = ["aprobados" => 0 , "suspensos" => 0];
+                }
+                $acumulacionNotaAlumnoAsignatura = 0;
+                for($i =0 ;$i<count($notas);$i++){
+                    $acumulacionNotaAlumnoAsignatura += $notas[$i];
+                }
+                $nota = $acumulacionNotaAlumnoAsignatura/ count($notas);
+                $contadorAlumnos++;
+                $notaAcumulada += $nota;
+
+                if($nota < 5){
+                    $suspensos++;
+                    $alumnos[$nombreAlumno]["suspensos"]++;
+                } else {
+                    $aprobados++;
+                    $alumnos[$nombreAlumno]["aprobados"]++;
+                }
+                if($nota > $notaMaxima["nota"]){
+                    $notaMaxima["alumno"] = $nombreAlumno;
+                    $notaMaxima["nota"] = $nota;
+                }
+                if($nota < $notaMinima["nota"]){
+                    $notaMinima["alumno"] = $nombreAlumno;
+                    $notaMinima["nota"] = $nota;
+                }
         }
         if($contadorAlumnos > 0){
             $resultado[$asignatura]["media"] = $notaAcumulada / $contadorAlumnos;
