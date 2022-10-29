@@ -10,7 +10,47 @@
     <?php
     if(isset($data["resultado"])){
     ?>
-    <div class="col-lg-4 col-12">
+    <div class="col-12">
+        <div class="card shadow mb-4">
+            <div
+                class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                <h6 class="m-0 font-weight-bold text-primary">Asignaturas</h6>                                    
+            </div>
+            <!-- Card Body -->
+            <div class="card-body">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Asigantura</th>
+                            <th>Media</th>
+                            <th>Aprobados</th>
+                            <th>Suspensos</th>
+                            <th>Máximo</th>
+                            <th>Mínimo</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php
+                        foreach ($data["resultado"]["asignaturas"] as $asignatura => $datosAsignatura){
+                        ?>
+                        <tr>
+                            <td><?php echo ucfirst($asignatura); ?></td>
+                            <td><?php echo number_format($datosAsignatura["media"],2,".",","); ?></td>
+                            <td><?php echo $datosAsignatura["aprobados"]; ?></td>
+                            <td><?php echo $datosAsignatura["suspensos"]; ?></td>
+                            <td><?php echo $datosAsignatura["max"]["alumno"]. ": " .$datosAsignatura["max"]["nota"]; ?></td>
+                            <td><?php echo $datosAsignatura["min"]["alumno"]. ": " .$datosAsignatura["min"]["nota"]; ?></td>
+                        </tr>
+                        <?php
+                        }
+                        ?>
+                    </tbody>
+                </table>
+    <?php
+    }
+    if(isset($data["resultado"])){
+    ?>
+    <div class="col-lg-6 col-12">
         <div class="alert alert-success">
             <h6>Todo Aprobado</h6>
             <ol>
@@ -24,7 +64,7 @@
             </ol>
         </div>
     </div>
-    <div class="col-lg-4 col-12">
+    <div class="col-lg-6 col-12">
         <div class="alert alert-warning">
             <h6>Han suspendido 1</h6>
             <ol>
@@ -38,7 +78,7 @@
             </ol>
         </div>
     </div>
-    <div class="col-lg-4 col-12">
+    <div class="col-lg-6 col-12">
         <div class="alert alert-info">
             <h6>Promocionan</h6>
             <ol>
@@ -52,7 +92,7 @@
             </ol>
         </div>
     </div>
-    <div class="col-lg-4 col-12">
+    <div class="col-lg-6 col-12">
         <div class="alert alert-danger">
             <h6>No promocionan</h6>
             <ol>

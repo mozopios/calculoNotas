@@ -81,6 +81,16 @@ function datosAsignaturas(array $arrayJson) : array{
                 $acumulacionNotaAlumnoAsignatura = 0;
                 for($i =0 ;$i<count($notas);$i++){
                     $acumulacionNotaAlumnoAsignatura += $notas[$i];
+                    
+                    if($notas[$i] > $notaMaxima["nota"]){
+                        $notaMaxima["alumno"] = $nombreAlumno;
+                        $notaMaxima["nota"] = intval($notas[$i]);
+                    }
+                    if($notas[$i] < $notaMinima["nota"]){
+                        $notaMinima["alumno"] = $nombreAlumno;
+                        $notaMinima["nota"] = intval($notas[$i]);
+                    }
+                    
                 }
                 $nota = $acumulacionNotaAlumnoAsignatura/ count($notas);
                 $contadorAlumnos++;
@@ -92,14 +102,6 @@ function datosAsignaturas(array $arrayJson) : array{
                 } else {
                     $aprobados++;
                     $alumnos[$nombreAlumno]["aprobados"]++;
-                }
-                if($nota > $notaMaxima["nota"]){
-                    $notaMaxima["alumno"] = $nombreAlumno;
-                    $notaMaxima["nota"] = $nota;
-                }
-                if($nota < $notaMinima["nota"]){
-                    $notaMinima["alumno"] = $nombreAlumno;
-                    $notaMinima["nota"] = $nota;
                 }
         }
         if($contadorAlumnos > 0){
