@@ -25,8 +25,8 @@
                             <th>Media</th>
                             <th>Aprobados</th>
                             <th>Suspensos</th>
-                            <th>Máximo</th>
-                            <th>Mínimo</th>
+                            <th>Nota Máxima</th>
+                            <th>Nota Mínima</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -35,7 +35,7 @@
                         ?>
                         <tr>
                             <td><?php echo ucfirst($asignatura); ?></td>
-                            <td><?php echo number_format($datosAsignatura["media"],2,".",","); ?></td>
+                            <td><?php echo number_format($datosAsignatura["media"],2,",","."); ?></td>
                             <td><?php echo $datosAsignatura["aprobados"]; ?></td>
                             <td><?php echo $datosAsignatura["suspensos"]; ?></td>
                             <td><?php echo $datosAsignatura["max"]["alumno"]. ": " .$datosAsignatura["max"]["nota"]; ?></td>
@@ -50,9 +50,10 @@
     }
     if(isset($data["resultado"])){
     ?>
-    <div class="col-lg-6 col-12">
+    <div class="row">
+    <div class="col-12 col-lg-6">
         <div class="alert alert-success">
-            <h6>Todo Aprobado</h6>
+            <h6>Aprueban Todo</h6>
             <ol>
                 <?php
                     foreach($data["resultado"]["alumnos"] as $nombreAlumno => $datos){
@@ -64,9 +65,9 @@
             </ol>
         </div>
     </div>
-    <div class="col-lg-6 col-12">
+    <div class="col-12 col-lg-6">
         <div class="alert alert-warning">
-            <h6>Han suspendido 1</h6>
+            <h6>Suspenden 1</h6>
             <ol>
                 <?php
                     foreach($data["resultado"]["alumnos"] as $nombreAlumno => $datos){
@@ -78,7 +79,7 @@
             </ol>
         </div>
     </div>
-    <div class="col-lg-6 col-12">
+    <div class="col-12 col-lg-6">
         <div class="alert alert-info">
             <h6>Promocionan</h6>
             <ol>
@@ -92,7 +93,7 @@
             </ol>
         </div>
     </div>
-    <div class="col-lg-6 col-12">
+    <div class="col-12 col-lg-6">
         <div class="alert alert-danger">
             <h6>No promocionan</h6>
             <ol>
@@ -105,6 +106,7 @@
                 ?>
             </ol>
         </div>
+    </div>
     </div>
     <?php
     }
