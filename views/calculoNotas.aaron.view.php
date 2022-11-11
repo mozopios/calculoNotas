@@ -38,8 +38,8 @@
                             <td><?php echo number_format($datosAsignatura["media"],2,",","."); ?></td>
                             <td><?php echo $datosAsignatura["aprobados"]; ?></td>
                             <td><?php echo $datosAsignatura["suspensos"]; ?></td>
-                            <td><?php echo $datosAsignatura["max"]["alumno"]. ": " .$datosAsignatura["max"]["nota"]; ?></td>
-                            <td><?php echo $datosAsignatura["min"]["alumno"]. ": " .$datosAsignatura["min"]["nota"]; ?></td>
+                            <td><?php echo $datosAsignatura["max"]["alumno"]. ": " . number_format($datosAsignatura["max"]["nota"],2,",","."); ?></td>
+                            <td><?php echo $datosAsignatura["min"]["alumno"]. ": " . number_format($datosAsignatura["min"]["nota"],2,",","."); ?></td>
                         </tr>
                         <?php
                         }
